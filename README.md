@@ -34,22 +34,64 @@ SOUL provides the architectural components to address these limitations, enablin
 
 SOUL employs a modular architecture centered around guiding a powerful, pre-trained LLM:
 
-+-------------------------+      +-------------------+      +--------------------+
-| Host System/Application |<---->| Perception/Action |<---->|    SOUL Agent      |
-| (Chatbot, Game, Robot)  |      |    Interfaces     |      | (+ SOUL Components)|
-+-------------------------+      +-------------------+      +---------+----------+
-                                       ^                              | Internal State
-                                       | Knowledge Access             v
-                                       +--------------------<--+  Motivation  |
-                                                             |  Framework   |
-+-------------------------+                                  |  (Vector)    |
-| External Knowledge Source|<---->| Knowledge Interface |      +--------------+
-| (MCG, DB, Files, API)   |      +-------------------+      | Background   |
-+-------------------------+                                  | Prompting    |<------> LLM Interface ---> Pluggable LLM
-                                                             | Engine       |
-                                                             +--------------+
-                                                             | (Governance) | Optional Hooks
-                                                             +--------------+
+```mermaid
+graph LR
+    subgraph Host System
+        Host["Host System/Application <br/>(Chatbot, Game, Robot)"]
+    end
+
+    subgraph External Systems
+        LLM["Pluggable LLM <br/>(GPT-4o, etc.)"]
+        KS["External Knowledge Source <br/>(MCG, DB, Files, API)"]
+    end
+
+    subgraph SOUL Framework Core
+        direction TB
+
+        subgraph Agent Core
+            SOUL["SOUL Agent <br/>(+ SOUL Components)"]
+        end
+
+        subgraph Cognitive Components
+            MF["Motivation Framework <br/>(Vector, Instincts)"]
+            BPE["Background Prompting Engine <br/>(Templates, Refinement)"]
+            Gov["(Governance Hooks)"]
+        end
+
+        subgraph Interfaces
+            PAI["Perception/Action Interfaces"]
+            KI["Knowledge Interface"]
+            LLMI["LLM Interface"]
+        end
+
+SOUL -->|Controls/Receives Internal State| MF
+    SOUL -->|Controls/Initiates| BPE
+    SOUL -->|Queries| KI
+    SOUL -->|Checks/Controlled By| Gov
+
+    MF --->|Guides| BPE
+    BPE --->|Generates Prompt| LLMI
+    KI --->|Accesses| KS
+    LLMI --->|Requests| LLM
+    LLM --->|Returns Response| LLMI
+    LLMI --->|Provides Result/Feedback| BPE
+    KS --->|Provides Data| KI
+    KI --->|Provides Context| SOUL
+end
+
+Host <---> PAI
+PAI <---> SOUL
+
+style Host fill:#cde,stroke:#333,stroke-width:2px
+style External Systems fill:#eec,stroke:#333,stroke-width:2px
+style SOUL fill:#ccf,stroke:#333,stroke-width:2px
+style MF fill:#ddf,stroke:#333,stroke-width:1px
+style BPE fill:#ddf,stroke:#333,stroke-width:1px
+style Gov fill:#eee,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5
+style PAI fill:#cfc,stroke:#333,stroke-width:1px
+style KI fill:#cfc,stroke:#333,stroke-width:1px
+style LLMI fill:#cfc,stroke:#333,stroke-width:1px
+```
 
 **Key Components (Implemented in `src/soul/`):**
 
