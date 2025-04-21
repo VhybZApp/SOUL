@@ -68,7 +68,7 @@ graph LR
         %% Governance Connections %%
         Gov -->|Moderates?| MF
         Gov -->|Moderates?| BPE
-        Gov -->|Moderates?| SOUL_Agent # Action Vetting
+        Gov -->|Moderates?| SOUL_Agent
     end
 
     %% System Boundary Connections %%
