@@ -93,9 +93,9 @@ graph LR
     style LLMI fill:#474,stroke:#DDD,stroke-width:1px,color:#FFF %% White text on green %%
 ```
 
-**Key Components (Implemented in `src/soul/`):**
-
 *Note: The diagram illustrates the core components and internal architecture of a *single* Soulmade micro-agent instance built using the SOUL framework. Constructing systems involving multiple interacting Soulmades (a "Society of Minds") requires higher-level orchestration and communication mechanisms defined within the host system, leveraging multiple instances of this core agent architecture.*
+
+**Key Components (Implemented in `src/soul/`):**
 
 1.  **Agent Orchestrator (`soul.py`):** Manages the core perception-cognition-action loop.
 2.  **Interfaces (`interfaces/`):** Abstract base classes defining how SOUL plugs into external systems (LLMs, Knowledge Sources, Host Application I/O, Governance). This ensures modularity and extensibility (e.g., for future integration with specific platforms like Hyperon/MeTTa or custom knowledge bases).
