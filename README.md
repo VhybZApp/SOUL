@@ -28,7 +28,8 @@ SOUL provides the architectural components to address these limitations, enablin
 *   **Agenda:** The set of active goals or intentions derived from the Internal State that guide the Soulmade's focus and actions.
 *   **Perspective/Bias:** Soulmades can be configured or learn specific viewpoints, influencing how they interpret information and formulate responses.
 *   **Background Prompting:** The core mechanism used by SOUL to guide a pluggable base LLM. Targeted prompts, generated based on the Internal State and context, steer the LLM towards generating outputs aligned with the Soulmade's current agenda and perspective.
-*   **Society of Minds (Collective Synergy):** SOUL enables you to spawn multiple Soulmades and leave them "on", operating together in the background. These agents synergize like voices inside a collective agent's head, each contributing their unique perspective, agenda, and expertise. Their ongoing interplay and communication result in emergent behaviors and outputs that reflect the best aspects of all, forming a dynamic, collaborative intelligence beyond any single agent.
+*   **Society of Minds (Conceptual Alignment):** SOUL provides the building blocks (soulmades) for systems where multiple, distinct micro-agents can operate concurrently. Complementary to the traditional Mixture of Experts (MoE) architectures that often route tasks to specialized models based on input, SOUL enables a higher-level dynamic where each Soulmade contributes its unique perspective and acts based on its own internal state (Motivation Vector). Their collective behavior and potential interactions (orchestrated by the host system) can lead to emergent outcomes reflecting a synergy of diverse agendas and specialized insights, akin to Minsky's "Society of Minds" concept operating in the motivational and cognitive space rather than just the model's latent space.
+
 ## Architecture
 
 SOUL employs a modular architecture centered around guiding a powerful, pre-trained LLM:
@@ -94,7 +95,9 @@ graph LR
 
 **Key Components (Implemented in `src/soul/`):**
 
-1.  **Agent Orchestrator (`agent.py`):** Manages the core perception-cognition-action loop.
+*Note: The diagram illustrates the core components and internal architecture of a *single* Soulmade micro-agent instance built using the SOUL framework. Constructing systems involving multiple interacting Soulmades (a "Society of Minds") requires higher-level orchestration and communication mechanisms defined within the host system, leveraging multiple instances of this core agent architecture.*
+
+1.  **Agent Orchestrator (`soul.py`):** Manages the core perception-cognition-action loop.
 2.  **Interfaces (`interfaces/`):** Abstract base classes defining how SOUL plugs into external systems (LLMs, Knowledge Sources, Host Application I/O, Governance). This ensures modularity and extensibility (e.g., for future integration with specific platforms like Hyperon/MeTTa or custom knowledge bases).
 3.  **Motivation Framework (`components/motivation/`):** Manages the agent's Internal State (Motivation Vector). Includes seedable "instincts" and mechanisms for updating the vector based on inputs and feedback. Supports defining diverse motivational structures (human-like or "alien digital").
 4.  **Background Prompting Engine (`components/prompting/`):** Generates targeted prompts for the backend LLM, guided by the Motivation Framework and assembled context. Includes template management and refinement logic.
@@ -105,13 +108,14 @@ graph LR
 
 ## Features & Capabilities
 
-*   **Modular Motivation Systems:** Define custom drives, goals, and biases for agents.
-*   **Dynamic Agenda Formation:** Agents act based on an evolving internal state.
-*   **Perspective-Driven Interaction:** Agents can maintain and express specific viewpoints.
+*   **Modular Motivation Systems:** Define custom drives, goals, and biases for individual Soulmades.
+*   **Dynamic Agenda Formation:** Soulmades act based on an evolving internal state.
+*   **Perspective-Driven Interaction:** Soulmades can maintain and express specific viewpoints.
 *   **Purposeful Outputs:** Generates targeted insights or actions, minimizing generic "text walls."
+*   **Enables Micro-Agentic Systems:** Provides the foundational Soulmade micro-agents for building complex "Society of Minds" architectures.
 *   **Pluggable LLM Backend:** Leverage various state-of-the-art language models.
-*   **Extensible Interfaces:** Integrate with diverse host systems, knowledge sources, and future governance mechanisms.
-*   **Adaptive Learning:** Potential for motivations and prompt strategies to evolve based on performance.
+*   **Extensible Interfaces:** Integrate with diverse host systems, knowledge sources, and governance mechanisms.
+*   **Adaptive Learning Potential:** Motivations and prompt strategies can potentially evolve based on performance feedback.
 
 ## Getting Started
 
