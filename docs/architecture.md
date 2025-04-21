@@ -40,36 +40,37 @@ graph LR
             Eval["Evaluation/Learning Hooks"]
         end
 
+        %% Connections from SOUL Agent %%
         SOUL_Agent -->|Input/Output| PAI
         SOUL_Agent -->|Triggers Cognitive Cycle| MF
         SOUL_Agent -->|Receives Action Plan| BPE
         SOUL_Agent -->|Sends Context Requests| CtxA
         SOUL_Agent -->|Applies Moderation?| Gov
 
-        MF --->|Current State (Vector)| BPE
-        MF --->|Current State (Vector)| CtxA
-        MF --->|Receives Updates| Eval
-
+        %% Internal Cognitive Connections %%
+        MF --->|Guides| BPE  %% Corrected Label Here %%
         CtxA -->|Assembled Context| BPE
-        CtxA -->|Queries| KI
-        CtxA -->|Reads| Host # Implicit context from host via PAI/Agent
-
         BPE --->|Generates Prompt| LLMI
         BPE --->|Receives LLM Result Analysis| Eval
+        MF --->|Current State (Vector)| CtxA %% State used by Context Assembler %%
+        MF --->|Receives Updates| Eval
 
+        %% Interface Connections %%
+        CtxA -->|Queries| KI
         KI --->|Accesses| KS
         LLMI --->|Requests| LLM
         LLM --->|Returns Response| LLMI
         LLMI --->|Provides Result| BPE
-
         KS --->|Provides Data| KI
         KI --->|Provides Knowledge| CtxA
 
+        %% Governance Connections %%
         Gov -->|Moderates?| MF
         Gov -->|Moderates?| BPE
         Gov -->|Moderates?| SOUL_Agent # Action Vetting
     end
 
+    %% System Boundary Connections %%
     Host <---> PAI
 
     %% Styling %%
