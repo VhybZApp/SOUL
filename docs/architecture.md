@@ -48,7 +48,7 @@ graph LR
         SOUL_Agent -->|Applies Moderation?| Gov
 
         %% Internal Cognitive Connections %%
-        MF --->|Guides| BPE  %% Corrected Label Here %%
+        MF --->|Guides| BPE
         CtxA -->|Assembled Context| BPE
         BPE --->|Generates Prompt| LLMI
         BPE --->|Receives LLM Result Analysis| Eval
