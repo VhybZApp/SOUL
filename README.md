@@ -22,7 +22,7 @@ SOUL provides the architectural components to address these limitations, enablin
 ## Key Concepts
 
 *   **SOUL (Specific and Objective Understanding Logic):** The core framework philosophy and architecture, focusing on targeted, grounded reasoning and purposeful action.
-*   **Soulmade:** An instance of an AI agent built using the SOUL framework. Each Soulmade develops its own internal state, perspective, and agenda.
+*   **Soulmade:** A micro-agent built using the SOUL framework. Each Soulmade develops its own internal state, perspective, and agenda.
 *   **Purposeful Agency:** The defining characteristic of a Soulmade. Actions and outputs are driven by an internal agenda and perspective, aimed at achieving specific goals or expressing a viewpoint, rather than just responding generically. Soulmades engage when they have a "strong opinion" or insight relevant to their agenda.
 *   **Internal State (Motivation Vector):** A dynamic, multi-dimensional representation of the Soulmade's current drives, biases, goals, and perspectives. This evolves based on interaction, feedback, and internal logic.
 *   **Agenda:** The set of active goals or intentions derived from the Internal State that guide the Soulmade's focus and actions.
