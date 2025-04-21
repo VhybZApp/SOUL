@@ -64,33 +64,33 @@ graph LR
             LLMI["LLM Interface"]
         end
 
-SOUL -->|Controls/Receives Internal State| MF
-    SOUL -->|Controls/Initiates| BPE
-    SOUL -->|Queries| KI
-    SOUL -->|Checks/Controlled By| Gov
+        SOUL -->|Controls/Receives Internal State| MF
+        SOUL -->|Controls/Initiates| BPE
+        SOUL -->|Queries| KI
+        SOUL -->|Checks/Controlled By| Gov
 
-    MF --->|Guides| BPE
-    BPE --->|Generates Prompt| LLMI
-    KI --->|Accesses| KS
-    LLMI --->|Requests| LLM
-    LLM --->|Returns Response| LLMI
-    LLMI --->|Provides Result/Feedback| BPE
-    KS --->|Provides Data| KI
-    KI --->|Provides Context| SOUL
-end
+        MF --->|Guides| BPE
+        BPE --->|Generates Prompt| LLMI
+        KI --->|Accesses| KS
+        LLMI --->|Requests| LLM
+        LLM --->|Returns Response| LLMI
+        LLMI --->|Provides Result/Feedback| BPE
+        KS --->|Provides Data| KI
+        KI --->|Provides Context| SOUL
+    end
 
-Host <---> PAI
-PAI <---> SOUL
+    Host <---> PAI
+    PAI <---> SOUL
 
-style Host fill:#cde,stroke:#333,stroke-width:2px
-style External Systems fill:#eec,stroke:#333,stroke-width:2px
-style SOUL fill:#ccf,stroke:#333,stroke-width:2px
-style MF fill:#ddf,stroke:#333,stroke-width:1px
-style BPE fill:#ddf,stroke:#333,stroke-width:1px
-style Gov fill:#eee,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5
-style PAI fill:#cfc,stroke:#333,stroke-width:1px
-style KI fill:#cfc,stroke:#333,stroke-width:1px
-style LLMI fill:#cfc,stroke:#333,stroke-width:1px
+    style Host fill:#cde,stroke:#333,stroke-width:2px,color:#000 %% Black text on light blue %%
+    style External Systems fill:#eec,stroke:#333,stroke-width:2px,color:#000 %% Black text on light yellow %%
+    style SOUL fill:#446,stroke:#DDD,stroke-width:2px,color:#FFF %% White text on dark blue/purple %%
+    style MF fill:#558,stroke:#DDD,stroke-width:1px,color:#FFF %% White text on darker blue/purple %%
+    style BPE fill:#558,stroke:#DDD,stroke-width:1px,color:#FFF %% White text on darker blue/purple %%
+    style Gov fill:#666,stroke:#AAA,stroke-width:1px,stroke-dasharray: 5 5,color:#FFF %% White text on gray %%
+    style PAI fill:#474,stroke:#DDD,stroke-width:1px,color:#FFF %% White text on green %%
+    style KI fill:#474,stroke:#DDD,stroke-width:1px,color:#FFF %% White text on green %%
+    style LLMI fill:#474,stroke:#DDD,stroke-width:1px,color:#FFF %% White text on green %%
 ```
 
 **Key Components (Implemented in `src/soul/`):**
