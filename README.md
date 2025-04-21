@@ -82,7 +82,7 @@ graph LR
     Host <---> PAI
     PAI <---> SOUL
 
-    style Host fill:#cde,stroke:#333,stroke-width:2px,color:#FFF %% White text on light blue %%
+    style Host fill:#68a,stroke:#DDD,stroke-width:2px,color:#FFF %% White text on darker blue %%
     style External Systems fill:#eec,stroke:#333,stroke-width:2px,color:#000 %% Black text on light yellow %%
     style SOUL fill:#446,stroke:#DDD,stroke-width:2px,color:#FFF %% White text on dark blue/purple %%
     style MF fill:#558,stroke:#DDD,stroke-width:1px,color:#FFF %% White text on darker blue/purple %%
