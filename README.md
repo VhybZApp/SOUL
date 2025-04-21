@@ -4,7 +4,7 @@
 
 ## Overview
 
-SOUL is a modular, extensible Python framework for developing advanced AI agents – **Soulmades** – characterized by **purposeful agency**, **distinct perspectives**, and the ability to act based on an internal **agenda**. It moves beyond reactive, text-wall generating models towards AI that exhibits "Specific and Objective Understanding Logic."
+SOUL is a modular, extensible Python framework for developing advanced AI agents, **"Soulmades"**, characterized by **purposeful agency**, **distinct perspectives**, and the ability to act based on an internal **agenda**. It moves beyond reactive, text-wall generating models towards AI that exhibits "Specific and Objective Understanding Logic."
 
 SOUL is designed to be **pluggable** into various host systems (chatbots, virtual environments, robotic control systems, creative tools) enabling developers to imbue their applications with AI agents possessing richer internal states and more directed, insightful behaviors.
 
@@ -28,8 +28,7 @@ SOUL provides the architectural components to address these limitations, enablin
 *   **Agenda:** The set of active goals or intentions derived from the Internal State that guide the Soulmade's focus and actions.
 *   **Perspective/Bias:** Soulmades can be configured or learn specific viewpoints, influencing how they interpret information and formulate responses.
 *   **Background Prompting:** The core mechanism used by SOUL to guide a pluggable base LLM. Targeted prompts, generated based on the Internal State and context, steer the LLM towards generating outputs aligned with the Soulmade's current agenda and perspective.
-*   **Society of Minds (Conceptual Alignment):** SOUL enables the creation of agents whose behavior emerges from the dynamic interplay of multiple internal motivational components (represented in the Motivation Vector), evolving beyond simple dependence on immediate textual context towards a more robust internal model.
-
+*   **Society of Minds (Collective Synergy):** SOUL enables you to spawn multiple Soulmades and leave them "on", operating together in the background. These agents synergize like voices inside a collective agent's head, each contributing their unique perspective, agenda, and expertise. Their ongoing interplay and communication result in emergent behaviors and outputs that reflect the best aspects of all, forming a dynamic, collaborative intelligence beyond any single agent.
 ## Architecture
 
 SOUL employs a modular architecture centered around guiding a powerful, pre-trained LLM:

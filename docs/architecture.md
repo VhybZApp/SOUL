@@ -4,9 +4,9 @@
 
 This document provides a more detailed exploration of the **SOUL (Specific and Objective Understanding Logic)** Framework's architecture. For a high-level introduction, key concepts, and the overall vision, please refer to the main `README.md`.
 
-The core philosophy is a **modular, pluggable framework** designed to orchestrate sophisticated AI agency (**Soulmades**) by **guiding powerful, pre-trained Large Language Models (LLMs)** through dynamic internal states and targeted background prompting.
+The core philosophy is a **modular, pluggable framework** designed to orchestrate sophisticated AI agency (**Soulmades**) by **guiding powerful, pre-trained foundation models (LxMs)** through dynamic internal states and targeted background prompting.
 
-## 2. Architectural Diagram (Reiteration for Context)
+## 2. Architectural Diagram
 
 ```mermaid
 graph LR
