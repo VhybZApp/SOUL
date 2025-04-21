@@ -34,22 +34,22 @@ SOUL provides the architectural components to address these limitations, enablin
 
 SOUL employs a modular architecture centered around guiding a powerful, pre-trained LLM:
 
-+-------------------------+ +-------------------+ +--------------------+
-| Host System/Application |<---->| Perception/Action |<---->| SOUL Agent |
-| (Chatbot, Game, Robot) | | Interfaces | | (+ SOUL Components)|
-+-------------------------+ +-------------------+ +---------+----------+
-^ | Internal State
-| Knowledge Access v
-+--------------------<--+ Motivation |
-| Framework |
-+-------------------------+ | (Vector) |
-| External Knowledge Source|<---->| Knowledge Interface | +--------------+
-| (MCG, DB, Files, API) | +-------------------+ | Background |
-+-------------------------+ | Prompting |<------> LLM Interface ---> Pluggable LLM
-| Engine |
-+--------------+
-| (Governance) | Optional Hooks
-+--------------+
++-------------------------+      +-------------------+      +--------------------+
+| Host System/Application |<---->| Perception/Action |<---->|    SOUL Agent      |
+| (Chatbot, Game, Robot)  |      |    Interfaces     |      | (+ SOUL Components)|
++-------------------------+      +-------------------+      +---------+----------+
+                                       ^                              | Internal State
+                                       | Knowledge Access             v
+                                       +--------------------<--+  Motivation  |
+                                                             |  Framework   |
++-------------------------+                                  |  (Vector)    |
+| External Knowledge Source|<---->| Knowledge Interface |      +--------------+
+| (MCG, DB, Files, API)   |      +-------------------+      | Background   |
++-------------------------+                                  | Prompting    |<------> LLM Interface ---> Pluggable LLM
+                                                             | Engine       |
+                                                             +--------------+
+                                                             | (Governance) | Optional Hooks
+                                                             +--------------+
 
 **Key Components (Implemented in `src/soul/`):**
 
