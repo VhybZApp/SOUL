@@ -52,7 +52,7 @@ graph LR
         CtxA -->|Assembled Context| BPE
         BPE --->|Generates Prompt| LLMI
         BPE --->|Receives LLM Result Analysis| Eval
-        MF --->|Provides State| CtxA  %% Simplified Label & Moved Comment Below %%
+        MF --->|Provides State| CtxA
         %% State used by Context Assembler %%
         MF --->|Receives Updates| Eval
 
