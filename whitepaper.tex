@@ -3,7 +3,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{hyperref}
 \usepackage[margin=1.25in]{geometry}
-\title{Implementation Guide: SOUL Motivation Framework}
+\title{Society of Meta-Agents: The SOUL Motivation Framework for Specific and Objective Understanding Logic}
 \author{Keyvan M. Sadeghi}
 \date{\today}
 
@@ -78,7 +78,6 @@ The agent's operation at each time $t$ is:
   \end{cases}
 \end{align*}
 \textit{Explanation:} $a_{t+1}$ is either a harvested axiom/rule (to be injected as a nudge) or the null action $\varnothing$ (agent remains silent).
-
 \subsection{Subgoal Discovery}
 If $s_c$ stagnates or $s_u$ spikes, the agent auto-discovers new subgoals by clustering novel contexts in $G$ and generating new rules. This enables adaptive exploration.
 
@@ -155,18 +154,7 @@ Below are concrete steps, with Python library suggestions.
 \end{itemize}
   \textit{Explanation:} $f_\mathrm{match}$ may be a similarity or density function over meta-graph patterns, and $\tau_t$ can be static or adaptively tuned.
 \begin{itemize}
-  \item \textbf{Perception--Cognition--Action Loop}: The agent's operation at each time $t$ can be mathematically expressed as:
-  \begin{align*}
-    \text{Perceive:} &\quad y_t = \mathrm{Perceive}(x_t) \\
-    \text{Update:} &\quad \mathbf{s}_{t+1} = \mathrm{UpdateMotivation}(\mathbf{s}_t, y_t) \\
-    \text{Record:} &\quad G_{t+1} = \mathrm{UpdateMetaGraph}(G_t, x_t, y_t) \\
-    \text{Confidence:} &\quad C_{t+1} = f_\mathrm{match}(x_{t+1}, G_{t+1}, \mathbf{s}_{t+1}) \\
-    \text{Action:} &\quad a_{t+1} = \begin{cases}
-      \mathrm{HarvestAxiom}(G_{t+1}, x_{t+1}) & \text{if } C_{t+1} \geq \tau_{t+1} \\
-      \varnothing & \text{otherwise}
-    \end{cases}
-  \end{align*}
-  \textit{Explanation:} $a_{t+1}$ is either a harvested axiom/rule (to be injected as a nudge) or the null action $\varnothing$ (agent remains silent).
+  \item \textbf{Perception--Cognition--Action}: As formulated in Section 2.5, the agent computes and thresholds a confidence score to determine whether to nudge or remain silent. This is implemented by evaluating a match function between the current context, meta-graph, and motivation vector, and comparing it to a dynamic threshold.
   \item \textbf{Discrete Generative Core}: Represent “instincts” as a \emph{metagraph} of rewrite rules $R$, inducing a predicted distribution $p_t(m)$ over outcomes. Measure error \cite{Goertzel2024}
   \[
     e_t = D_{\mathrm{KL}}(q_t\|p_t)
@@ -283,6 +271,7 @@ This guide unifies seminal research, architectural principles, and practical Pyt
 \bibitem{Oudeyer2007} P.-Y. Oudeyer, F. Kaplan, and V. V. Hafner. Intrinsic Motivation Systems for Autonomous Mental Development, 2007.
 \bibitem{Klyubin2005} A. S. Klyubin \emph{et al.}, Empowerment: A Universal Agent-Centric Measure, 2005.
 \bibitem{Lungarella2003} M. Lungarella, G. Metta, R. Pfeifer, and G. Sandini. Developmental robotics: A survey, Connection Science, 15(4), 151-190, 2003.
+\bibitem{Hull1943} C. L. Hull. \textit{Principles of Behavior: An Introduction to Behavior Theory}. New York: Appleton-Century, 1943.
 \end{thebibliography}
 
 \end{document}
