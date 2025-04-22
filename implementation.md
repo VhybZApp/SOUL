@@ -18,7 +18,7 @@ This document provides a comprehensive, step-by-step plan for implementing the S
 - Prepare for future genetic mixing of agent policies and sharing of meta-graphs among agent societies.
 
 ### Functional Requirements
-- Maintain a hidden Motivation Vector \(\mathbf{s} = [s_c, s_u, s_h]\) that is updated after every interaction based on competence, novelty, and homeostasis signals.
+- Maintain a hidden Motivation Vector $\mathbf{s} = [s_c, s_u, s_h]$ that is updated after every interaction based on competence, novelty, and homeostasis signals.
 - Passively observe user–LLM interactions and record patterns, responses, and context, storing them in a symbolic meta-graph (e.g., using MeTTa language).
 - Auto-generate subgoals and generalize patterns using novelty detection and pattern compression.
 - Only intervene ("nudge") when the agent's internal confidence—derived from meta-graph matches and motivation vector state—exceeds a dynamic threshold. Otherwise, remain silent and continue learning.
@@ -32,71 +32,71 @@ This document provides a comprehensive, step-by-step plan for implementing the S
 ## 2. Adopted Mathematics (with Explanations)
 
 ### 2.1. Competence-Progress Core
-```tex
+$$
 \Delta_c = p_g(t) - p_g(t-1)
 \quad
 s_c \leftarrow \mathrm{clip}(s_c + \alpha\,\Delta_c, 0, 1)
-```
+$$
 **Explanation:**
-- \(p_g(t)\) is the agent's measured performance (competence) at time \(t\).
-- \(\Delta_c\) is the change in competence since the last step.
-- \(s_c\) is the competence component of the Motivation Vector; it is updated by adding the scaled change in competence, then clipped to stay between 0 and 1.
+- $p_g(t)$ is the agent's measured performance (competence) at time $t$.
+- $\Delta_c$ is the change in competence since the last step.
+- $s_c$ is the competence component of the Motivation Vector; it is updated by adding the scaled change in competence, then clipped to stay between 0 and 1.
 
 ### 2.2. Novelty/Surprise Seeding
-```tex
+$$
 \mathrm{novel}(t) = 1 - \frac{\mathbf{e}(t) \cdot \mu_{t-1}}{\|\mathbf{e}(t)\|\,\|\mu_{t-1}\|}
 \quad
 s_u \leftarrow \mathrm{clip}(s_u + \alpha\,\mathrm{novel}(t), 0, 1)
-```
+$$
 **Explanation:**
-- \(\mathbf{e}(t)\) is the embedding of the current context; \(\mu_{t-1}\) is the mean embedding of past contexts.
+- $\mathbf{e}(t)$ is the embedding of the current context; $\mu_{t-1}$ is the mean embedding of past contexts.
 - This computes the cosine similarity between current and past contexts, subtracts from 1, so higher values mean more novelty.
-- \(s_u\) is the novelty/surprise component; it is updated by adding the scaled novelty score, clipped to [0,1].
+- $s_u$ is the novelty/surprise component; it is updated by adding the scaled novelty score, clipped to [0,1].
 
 ### 2.3. Homeostatic Decay
-```tex
+$$
 s_h \leftarrow (1 - \delta) s_h + \delta
-```
+$$
 **Explanation:**
-- \(s_h\) is the homeostatic drive, which gently decays toward a baseline (e.g., 1) at rate \(\delta\).
+- $s_h$ is the homeostatic drive, which gently decays toward a baseline (e.g., 1) at rate $\delta$.
 - This ensures the agent doesn't get stuck at extremes.
 
 ### 2.4. Discrete Generative Core (Rule Metagraph)
 - Instincts and policies are encoded as rewrite rules in a directed graph (metagraph).
 - Each turn, the agent predicts a distribution over rules, compares it to observed outcomes, and computes error using KL divergence:
-```tex
+$$
 e_t = D_{KL}(q_t \| p_t)
-```
+$$
 **Explanation:**
-- \(p_t\) is the predicted distribution over rules; \(q_t\) is the observed distribution.
-- \(D_{KL}\) is the Kullback-Leibler divergence, a measure of how one probability distribution diverges from another.
-- \(e_t\) is the error signal used for learning and adaptation.
+- $p_t$ is the predicted distribution over rules; $q_t$ is the observed distribution.
+- $D_{KL}$ is the Kullback-Leibler divergence, a measure of how one probability distribution diverges from another.
+- $e_t$ is the error signal used for learning and adaptation.
 
 ### 2.5. Reward Signals
-```tex
+$$
 r^{\rm int}_t = -e_t
 \qquad
 r^{\rm ep}_t \propto \sum_m q_t(m) \log \frac{1}{p_t(m)}
-```
+$$
 **Explanation:**
 - Internal reward is negative error (the agent is rewarded for reducing surprise).
 - Episodic reward is proportional to the negative log-likelihood of predictions.
 
 ### 2.6. Meta-Rule Self-Modification
-```tex
+$$
 m_i \leftarrow \arg\min_{m' \in \mathcal{N}(m_i)} e_t(R, \{M \setminus m_i\} \cup \{m'\})
-```
+$$
 **Explanation:**
-- The agent searches for a local change (neighbor \(m'\)) to a rule \(m_i\) that minimizes the error \(e_t\).
+- The agent searches for a local change (neighbor $m'$) to a rule $m_i$ that minimizes the error $e_t$.
 - Meta-rules are rules that can rewrite the rule graph itself.
 
 ### 2.7. Wasserstein Natural Gradient
-```tex
+$$
 \xi_{k+1} = \xi_k - h G(\xi_k)^{-1} \nabla_{\xi} F(p(\xi_k))
-```
+$$
 **Explanation:**
-- \(\xi\) are the parameters of the rule distribution.
-- \(G(\xi_k)\) is the Laplacian (a kind of matrix) over the rule graph, encoding its geometry.
+- $\xi$ are the parameters of the rule distribution.
+- $G(\xi_k)$ is the Laplacian (a kind of matrix) over the rule graph, encoding its geometry.
 - This is a gradient descent step that respects the structure of the rule space ("natural gradient").
 
 ### 2.8. Neural–Symbolic Hybrid (Predictive Coding Nets)
@@ -104,7 +104,7 @@ m_i \leftarrow \arg\min_{m' \in \mathcal{N}(m_i)} e_t(R, \{M \setminus m_i\} \cu
 - These networks implement "predictive coding": they try to predict their own inputs, and the difference (prediction error) is used to update both the neural and symbolic layers.
 
 ### 2.9. Genetic Tuning (Optional)
-- Hyperparameters (e.g., \(\alpha, \delta, \tau_c, \tau_u\)) are encoded as chromosomes and can be evolved using genetic algorithms for optimal performance.
+- Hyperparameters (e.g., $\alpha, \delta, \tau_c, \tau_u$) are encoded as chromosomes and can be evolved using genetic algorithms for optimal performance.
 
 ### 2.10. Vector Stores and Long-Term Memory
 - Use vector databases to store past context embeddings for retrieval and long-term adaptation.
@@ -114,7 +114,7 @@ m_i \leftarrow \arg\min_{m' \in \mathcal{N}(m_i)} e_t(R, \{M \setminus m_i\} \cu
 ## 3. System Architecture
 
 ### 3.1. High-Level Overview
-- **Motivation Vector:** Maintains a hidden, continuously evolving state \([s_c, s_u, s_h]\) that encodes the agent's current competence, novelty, and homeostasis.
+- **Motivation Vector:** Maintains a hidden, continuously evolving state $[s_c, s_u, s_h]$ that encodes the agent's current competence, novelty, and homeostasis.
 - **Rule Metagraph:** Encodes instincts, policies, and meta-rules as a symbolic graph (meta-graph), which is initially empty and populated over time by mining patterns from observed user–LLM interactions.
 - **Perception/Action:** Continuous neural nets (predictive coding) extract features and generate actions, providing a bridge between low-level perception and high-level symbolic reasoning.
 - **Thresholded Nudge Selection:** Instead of nudging every turn, the agent evaluates its internal confidence (based on meta-graph matches and motivation vector state). Only when the threshold is surpassed does it harvest and inject a nudge (in symbolic form) into the LLM context.
@@ -144,7 +144,7 @@ m_i \leftarrow \arg\min_{m' \in \mathcal{N}(m_i)} e_t(R, \{M \setminus m_i\} \cu
     - Periodically evolve hyperparameters using genetic algorithms to optimize agent performance.
 
 ### 3.3. Data Structures
-- **Motivation Vector:** Python `dataclass` with fields for \(s_c, s_u, s_h\).
+- **Motivation Vector:** Python `dataclass` with fields for $s_c, s_u, s_h$.
 - **Rule Graph:** `networkx.DiGraph` with nodes for rules/meta-rules.
 - **Neural Nets:** `torch.nn.Module` or `jax` models for predictive coding.
 - **Memory:** `faiss` or `chromadb` vector store.
