@@ -36,19 +36,19 @@ where $s_c$ is competence, $s_u$ is novelty/surprise, and $s_h$ is homeostasis. 
 \begin{itemize}
   \item \textbf{Competence Progress:}
   \[
-    \Delta_c = p_g(t) - p_g(t-1), \quad s_c \leftarrow \mathrm{clip}(s_c + \alpha \Delta_c, 0, 1)
+    \Delta_c = p_g(t) - p_g(t-1), \quad s_c \leftarrow \mathrm{proj}_{[0,1]}(s_c + \alpha \Delta_c)
   \]
-  where $p_g(t)$ is the agent's measured performance at time $t$.
+  where $p_g(t)$ is the agent's measured performance at time $t$, $\alpha > 0$ is a learning rate, and $\mathrm{proj}_{[0,1]}(x) = \min(\max(x, 0), 1)$ is the projection onto $[0,1]$.
   \item \textbf{Novelty/Surprise:}
   \[
-    \mathrm{novel}(t) = 1 - \frac{\mathbf{e}(t) \cdot \mu_{t-1}}{\|\mathbf{e}(t)\|\,\|\mu_{t-1}\|}, \quad s_u \leftarrow \mathrm{clip}(s_u + \alpha\,\mathrm{novel}(t), 0, 1)
+    \mathrm{novel}(t) = 1 - \frac{\mathbf{e}(t) \cdot \mu_{t-1}}{\|\mathbf{e}(t)\|\,\|\mu_{t-1}\|}, \quad s_u \leftarrow \mathrm{proj}_{[0,1]}(s_u + \alpha\,\mathrm{novel}(t))
   \]
-  where $\mathbf{e}(t)$ is the current context embedding and $\mu_{t-1}$ is the rolling mean.
+  where $\mathbf{e}(t)$ is the current context embedding and $\mu_{t-1}$ is the rolling mean. If $\|\mathbf{e}(t)\|=0$ or $\|\mu_{t-1}\|=0$, set $\mathrm{novel}(t) = 1$ by convention.
   \item \textbf{Homeostatic Decay:}
   \[
     s_h \leftarrow (1-\delta)s_h + \delta
   \]
-  This ensures $s_h$ gently returns to baseline.
+  where $\delta \in (0,1)$, ensuring $s_h$ gently returns to baseline.
 \end{itemize}
 
 \subsection{Meta-Graph and Rule Engine}
@@ -59,11 +59,12 @@ At each step, the agent computes a confidence score $C_t$:
 \[
   C_t = f_\mathrm{match}(x_t, G, \mathbf{s}_t)
 \]
-where $f_\mathrm{match}$ is a similarity or density function over meta-graph patterns and the current state. The agent compares $C_t$ to a dynamic threshold $\tau_t$:
+where $f_\mathrm{match}$ is a similarity or density function over meta-graph patterns and the current state (e.g., a softmax-weighted sum). The agent compares $C_t$ to a dynamic threshold $\tau_t$:
 \[
   \text{If}\quad C_t \geq \tau_t\quad \text{then nudge; else remain silent (null action)}
 \]
-\textbf{Concrete Example:} If $C_t$ is computed as the softmax of pattern matches in $G$ weighted by $\mathbf{s}_t$, and $\tau_t$ is set adaptively (e.g., as a running quantile), then the agent only acts when it is sufficiently confident.
+
+\textbf{Note:} All functions such as $\mathrm{proj}_{[0,1]}$, $f_\mathrm{match}$, $\mathrm{Perceive}$, $\mathrm{UpdateMotivation}$, and $\mathrm{HarvestAxiom}$ are defined in the Appendix.
 
 \subsection{Perception--Cognition--Action Loop}
 The agent's operation at each time $t$ is:
@@ -84,25 +85,29 @@ If $s_c$ stagnates or $s_u$ spikes, the agent auto-discovers new subgoals by clu
 \subsection{Discrete Generative Core and Error Signals}
 Instincts and policies are encoded as rewrite rules in $G$. The agent predicts a distribution $p_t(m)$ over outcomes, observes $q_t(m)$, and computes error:
 \[
-  e_t = D_{\mathrm{KL}}(q_t\|p_t)
+  e_t = D_{\mathrm{KL}}(q_t\|p_t) = \sum_m q_t(m) \log \frac{q_t(m)}{p_t(m)}
 \]
+where $q_t$ and $p_t$ are distributions with $\mathrm{supp}(q_t) \subseteq \mathrm{supp}(p_t)$, or $p_t(m)$ is regularized (e.g., $p_t(m) \leftarrow \max(p_t(m), \epsilon)$ for small $\epsilon$).
+
 This error drives reward and learning:
 \[
-  r^{\mathrm{int}}_t = -e_t, \qquad r^{\mathrm{ep}}_t \propto \sum_m q_t(m)\log\frac{1}{p_t(m)}
+  r^{\mathrm{int}}_t = -e_t, \qquad r^{\mathrm{ep}}_t = \beta \sum_m q_t(m)\log\frac{1}{p_t(m)}, \quad \beta > 0
 \]
+where $\beta$ is a proportionality constant.
 
 \subsection{Meta-Rule Self-Modification}
 Meta-rules $M$ rewrite the rule graph itself:
 \[
   m_i \leftarrow \underset{m'\in\mathcal{N}(m_i)}{\arg\min}\;e_t\bigl(R,\,M\setminus\{m_i\}\cup\{m'\}\bigr)
 \]
+where $\mathcal{N}(m_i)$ denotes the neighborhood of $m_i$ (candidate meta-rule modifications), and $e_t$ is the error as above.
 
 \subsection{Wasserstein Natural Gradient}
 Parameterize rule-distribution $p(\xi)$ and update via:
 \[
   \xi_{k+1} = \xi_k - h\,G(\xi_k)^{-1}\,\nabla_{\xi}F\bigl(p(\xi_k)\bigr)
 \]
-where $G$ is the Laplacian from the rule graph.
+where $G(\xi_k)$ is the metric tensor (Laplacian) from the rule graph, $h>0$ is the step size, and $F$ is a differentiable objective (e.g., expected reward or negative error).
 
 \subsection{Neural–Symbolic Hybrid and Memory}
 Continuous predictive-coding nets (vision and motor) run beneath the discrete core, exchanging features/actions. Long-term memory is implemented via vector stores (e.g., \texttt{faiss}, \texttt{chromadb}) for retrieval and adaptation.
@@ -176,91 +181,17 @@ Below are concrete steps, with Python library suggestions.
 \paragraph{Null Action and Silence:}
 \textit{If the confidence $C_t$ does not exceed the threshold $\tau_t$, the agent performs the null action $\varnothing$, i.e., it remains silent and continues to observe, record, and learn without intervening.}
 
-\section{Implementation Guide}
+\section{Considerations}
+While the SOUL Motivation Framework offers a mathematically unified approach to agent motivation, several limitations and open questions remain. First, the framework is currently theoretical and lacks empirical validation; its performance and scalability in real-world or large-scale simulated environments are yet to be demonstrated. The symbolic meta-graph and rule-based components, while interpretable, may face challenges in high-dimensional, noisy, or rapidly changing domains where purely neural or end-to-end learning may be more robust.
 
-Below are concrete steps, with Python library suggestions.
+Alternative paths for future development include hybridizing the SOUL framework with more advanced neural architectures, such as deep reinforcement learning agents or transformer-based world models, to better handle perception and action in complex environments. Additionally, the meta-rule self-modification and genetic mixing mechanisms could be further explored using evolutionary computation or meta-learning techniques, potentially enabling agents to autonomously discover new motivational drives or adapt to novel tasks.
 
-\subsection{Core Data Structures}
-\begin{itemize}
-  \item Use \texttt{numpy} for vector operations and embeddings.
-  \item Use \texttt{networkx} to represent the metagraph of rewrite rules and compute Laplacians.
-  \item Store agent state in a simple \texttt{dataclass}:
-  \begin{verbatim}
-  from dataclasses import dataclass
-  @dataclass
-  class State:
-      competence: float = 0.0
-      curiosity:  float = 0.0
-      stability:  float = 1.0
-  \end{verbatim}
-\end{itemize}
-
-\subsection{Novelty Detector}
-\begin{itemize}
-  \item Implement rolling mean with \texttt{collections.deque} and cosine distance via \texttt{scipy.spatial.distance.cosine}.
-\end{itemize}
-
-\subsection{Rewrite-Rule Engine}
-\begin{itemize}
-  \item Model rules as Python objects mapping pattern graphs to outputs.
-  \item Use \texttt{networkx} pattern-matching or custom graph algorithms for rule application.
-  \item Derive $p_t(m)$ by sampling or counting rule firings over stochastic selections (e.g., softmax weights in \texttt{torch}).
-\end{itemize}
-
-\subsection{Information-Theoretic Error}
-\begin{itemize}
-  \item Compute KL divergence with \texttt{scipy.stats.entropy(q, p)}.
-\end{itemize}
-
-\subsection{Reward \& State Update Loop}
-\begin{enumerate}
-  \item Collect feedback score $r(t)$ via environment simulation or user rating.
-  \item Update \texttt{State} (Motivation Vector) using the mathematical formulas above, with learning rate \texttt{alpha}.
-  \item Compute confidence $C_t$ and compare to threshold $\tau_t$; if $C_t \geq \tau_t$, harvest and inject a nudge (axiom/rule) from the meta-graph.
-  \item If nudging, prepend the harvested axiom/rule to the user query and invoke the LLM (e.g., via \texttt{openai} or \texttt{transformers}), relying on a pre-prompt for interpretation.
-  \item If not nudging, remain silent and continue to observe, record, and update internal state.
-\end{enumerate}
-\textbf{Example:} In Python, this loop is implemented as a function that updates the Motivation Vector, computes confidence, and either calls a nudge-injection routine or skips to the next observation.
-
-\subsection{Meta-Rule Implementation}
-\begin{itemize}
-  \item Represent meta-rules as rules over the rule-graph using \texttt{networkx}.
-  \item Define neighborhood $\mathcal{N}(m_i)$ of small metagraph edits.
-  \item Apply the meta-rule update formula in your training loop alongside rule edits.
-\end{itemize}
-
-\subsection{Natural Gradient Optimization}
-\begin{itemize}
-  \item Install \texttt{pot} (Python Optimal Transport) for Wasserstein solvers.
-  \item Build ground metric matrix $(\omega_{ij})$ from rule-graph distances.
-  \item Construct measure-dependent Laplacian via NetworkX weights.
-  \item Compute parameter Jacobians with \texttt{autograd} or manual derivatives.
-  \item Perform updates using \texttt{numpy.linalg.pinv} for pseudoinverse.
-\end{itemize}
-
-\subsection{Continuous Predictive-Coding Nets}
-\begin{itemize}
-  \item Use \texttt{PyTorch} or \texttt{JAX} to implement NGC-style layers:
-  \[
-    z \leftarrow z + \beta\bigl(-\gamma z + (E\cdot e)\odot \phi'(z) - e\bigr)
-  \]
-  \item Leverage \texttt{torch.nn.Module} for vision and arm nets.
-  \item Optimize with local Hebbian-like or standard optimizers (SGD) per PC update.
-\end{itemize}
-
-\subsection{Genetic Tuning (Optional)}
-\begin{itemize}
-  \item Represent hyperparameters $(\alpha,\delta,\tau_c,\tau_u)$ as a NumPy array.
-  \item Use \texttt{DEAP} or \texttt{pygad} for crossover and mutation over logged performance metrics.
-\end{itemize}
-
-\subsection{Vector Stores and Long-Term Memory}
-\begin{itemize}
-  \item Integrate \texttt{faiss} or \texttt{chromadb} for storing past contexts/embeddings.
-\end{itemize}
+Finally, integration with large language models (LLMs) and other foundation models presents both opportunities and risks. While LLMs can interpret and naturalize symbolic nudges, ensuring alignment and safety in open-ended interactions remains an open challenge. Careful evaluation and iterative refinement will be required as the framework transitions from theory to practice.
 
 \section{Conclusion}
 This guide unifies seminal research, architectural principles, and practical Python tools to implement SOUL’s Motivation Framework. By following it, you’ll build agents that self-modify, learn from surprise and progress, and nudge LLMs with precise, adaptive prompts.
+
+The novel contributions of this work are threefold: (1) the explicit formalization of a motivation vector that integrates competence, novelty, and homeostasis in a unified mathematical framework; (2) the introduction of a symbolic meta-graph and meta-rule self-modification mechanism, enabling agents to adaptively restructure their motivational drives and reasoning patterns; and (3) the practical blueprint for integrating symbolic, neural, and genetic components in a modular, extensible architecture. Together, these elements advance the field by providing both a theoretical foundation and a roadmap for future implementation and experimentation.
 
 \begin{thebibliography}{99}
 \bibitem{Goertzel2024} B. Goertzel. Discrete Active Predictive Coding for Goal-Guided Algorithmic Chemistry as a Potential Cognitive Kernel, 2024. arXiv:2412.16547 [cs.AI].
