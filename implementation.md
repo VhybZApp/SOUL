@@ -8,7 +8,7 @@ This document provides a comprehensive, step-by-step plan for implementing the S
 
 ### Core Objectives
 - Equip each agent ("Soulmade") with a dynamic internal state—called the Motivation Vector—so it acts with a consistent agenda, expresses individual biases, and behaves purposefully.
-- Enable micro-agent "societies of minds," plug-in knowledge sources, and feedback-driven learning hooks.
+- Enable meta-agent "societies of minds," plug-in knowledge sources, and feedback-driven learning hooks.
 - Ensure the Motivation Vector is hidden from the LLM, evolves over time, and drives context-aware actions and interventions.
 - Support auto-discovery of subgoals when progress stalls, enabling adaptive exploration.
 - Allow for silent observation and learning: agents do not intervene in every interaction, but instead listen and build up a knowledge base (meta-graph) of patterns, rules, and axioms from user–LLM conversations.
