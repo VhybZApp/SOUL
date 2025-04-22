@@ -4,7 +4,7 @@
 
 ## Overview
 
-SOUL is a modular, extensible Python framework for developing advanced AI agents, **"Soulmades"**, characterized by **purposeful agency**, **distinct perspectives**, and the ability to act based on an internal **agenda**. It moves beyond reactive, text-wall generating models towards AI that exhibits "Specific and Objective Understanding Logic."
+SOUL is a modular, extensible Python framework for developing meta-agents, **"Soulmades"**, characterized by inducing **purposeful agency**, **distinct perspectives**, and the ability to act based on an internal **agenda** into generic agents. It moves beyond reactive, text-wall generating models towards AI that exhibits "specific and objective" understanding
 
 SOUL is designed to be **pluggable** into various host systems (chatbots, virtual environments, robotic control systems, creative tools) enabling developers to imbue their applications with AI agents possessing richer internal states and more directed, insightful behaviors.
 
