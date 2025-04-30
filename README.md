@@ -1,10 +1,10 @@
-# SOUL: Specific and Objective Understanding Logic
+# SOUL: The force causing agents to act, unprompted
 
 <!-- Optional Badges -->
 
 ## Overview
 
-SOUL is a modular, extensible Python framework for developing meta-agents, **"Soulmades"**, characterized by inducing **purposeful agency**, **distinct perspectives**, and the ability to act based on an internal **agenda** into generic agents. It moves beyond reactive, text-wall generating models towards AI that exhibits "specific and objective" understanding.
+SOUL (Specific and Objective Understanding Logic) is a modular, extensible Python framework for developing meta-agents, **"soulmades"**, characterized by inducing **purposeful agency**, **distinct perspectives**, and the ability to act based on an internal **agenda** into generic agents. It moves beyond reactive, text-wall generating models towards AI that exhibits "specific and objective" understanding.
 
 SOUL is designed to be **pluggable** into various host systems (chatbots, virtual environments, robotic control systems, creative tools) enabling developers to imbue their applications with AI agents possessing richer internal states and more directed, insightful behaviors.
 
@@ -21,7 +21,7 @@ SOUL provides the architectural components to address these limitations, enablin
 
 ## Key Concepts
 
-*   **SOUL (Specific and Objective Understanding Logic):** The core framework philosophy and architecture, focusing on targeted, grounded reasoning and purposeful action.
+*   **Specific and Objective Understanding Logic:** The core framework architecture, focusing on targeted, grounded reasoning and purposeful action.
 *   **Soulmade:** A micro-agent built using the SOUL framework. Each Soulmade develops its own internal state, perspective, and agenda.
 *   **Purposeful Agency:** The defining characteristic of a Soulmade. Actions and outputs are driven by an internal agenda and perspective, aimed at achieving specific goals or expressing a viewpoint, rather than just responding generically. Soulmades engage when they have a "strong opinion" or insight relevant to their agenda.
 *   **Internal State (Motivation Vector):** A dynamic, multi-dimensional representation of the Soulmade's current drives, biases, goals, and perspectives. This evolves based on interaction, feedback, and internal logic.
